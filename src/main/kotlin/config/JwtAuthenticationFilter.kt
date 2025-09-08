@@ -36,9 +36,9 @@ class JwtAuthenticationFilter(
         }
         val jwt: String = authHeader.substring("Bearer ".length)
         println(jwt + "token bắt được là")
-        //bóc email từ token
+        //bóc email từ token để đi xác thực người dùng
         userEmail = jwtService.extractUserName(jwt)
-        println(userEmail + " email bắt được là")
+        println("$userEmail email bắt được là")
         if (SecurityContextHolder.getContext().authentication == null) {
             // tìm email được bóc từ token trong db
             val userDetail: UserDetails = this.userDetailService.loadUserByUsername(userEmail)
