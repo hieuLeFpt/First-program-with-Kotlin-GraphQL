@@ -7,14 +7,14 @@ import io.jsonwebtoken.SignatureAlgorithm
 import io.jsonwebtoken.io.Decoders
 import java.util.Date
 import io.jsonwebtoken.security.Keys
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.core.userdetails.UserDetails
 import java.security.Key
 
 @Service
-class JwtService {
-
-    private val SECRET_KEY: String = "dGhpc19pc19hX3NlY3JldF9rZXlfdGhhdF9zaG91bGRfYmVfYmFzZTY0"
-
+class JwtService(
+    @Value("\${jwt.secret-key}") private val secretKey: String
+) {
     fun extractUserName(token: String): String {
         return extractClaim(token, Claims::getSubject)
     }
@@ -67,7 +67,7 @@ class JwtService {
     }
 
     fun getSignInKey(): Key {
-        val keyBytes: ByteArray = Decoders.BASE64.decode(SECRET_KEY)
+        val keyBytes: ByteArray = Decoders.BASE64.decode(secretKey)
         return Keys.hmacShaKeyFor(keyBytes)
     }
 }
