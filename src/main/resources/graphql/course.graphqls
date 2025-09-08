@@ -1,0 +1,7 @@
+type Course{
+    id: ID!
+    name: String!
+    description: String!
+    active: Boolean!
+#    student: Student
+}

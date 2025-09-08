@@ -1,0 +1,47 @@
+type Student{
+    id: ID!
+    name: String!
+    age: Int!
+    email: String!
+    major: String!
+#    listCourse: [Course!]
+    role: Role
+}
+
+input StudentUpdate {
+    id: ID!
+    name: String
+    age: Int
+    email: String
+    major: String
+}
+
+input StudentCreate {
+    name: String!
+    age: Int!
+    email: String!
+    major: String!
+}
+
+type Query {
+    getAll: [Student!]!
+    getById(id: ID!): Student
+}
+
+type Mutation {
+    create(
+        name: String!
+        age: Int!
+        email: String!
+        major: String!): Boolean
+    update(
+        id: ID!
+        name: String!
+        age: Int!
+        email: String!
+        major: String!
+    ): Student
+    delete(id: ID!): Boolean
+    createStudent(student: StudentCreate!): Student
+    updateStudent(student: StudentUpdate!): Student
+}
