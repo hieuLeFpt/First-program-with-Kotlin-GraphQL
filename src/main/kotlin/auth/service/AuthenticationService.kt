@@ -1,16 +1,23 @@
-package com.auth
+package com.auth.service
 
+import com.auth.payload.AuthenticationResponse
+import com.auth.payload.AuthenticationRequest
+import com.auth.payload.RegisterRequest
 import com.config.JwtService
 import com.entity.Student
 import com.exception.StudentDuplicateEmailException
+import com.exception.StudentNameException
 import com.exception.StudentNotFoundException
 import com.repository.RoleRepository
 import com.repository.StudentRepository
 import lombok.RequiredArgsConstructor
+import org.springframework.http.HttpStatus
 import org.springframework.security.authentication.AuthenticationManager
+import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
+import org.springframework.web.server.ResponseStatusException
 import java.time.LocalDate
 
 @Service
@@ -39,24 +46,33 @@ class AuthenticationService(
         var jwtToken = jwtService.generateToken(student)
         return AuthenticationResponse(
             token = jwtToken,
+            roles = student.role?.name
         )
     }
 
     fun authenticate(request: AuthenticationRequest): AuthenticationResponse {
-        println("vào được service")
+        request.password?.length?.let {
+            if (it < 6) {
+                throw ResponseStatusException(HttpStatus.BAD_REQUEST,"Mật khẩu phải có ít nhất 6 ký tự"
+                )
+            }
+        }
         // thực chất là ProviderManager .authenticate vì implements AuthenticationManager(interface)
         // mà trong ProviderManager có dùng method .authenticate, AuthenticationProvider(interface) được impl bởi
         // AbstractUserDetailsAuthenticationProvider class đã ghi đè authenticate ở AuthenticationProvider(interface)
         // AbstractUserDetailsAuthenticationProvider có method retrieveUser được
         // DaoAuthenticationProvider extends AbstractUserDetailsAuthenticationProvider và ghi đè retrieveUser và làm nhiệm vụ tìm trong db với
         // tk và mk trong rq
-
-        authenticationManager.authenticate(
-            UsernamePasswordAuthenticationToken(
-                request.email,
-                request.password
-            ),
-        )
+        try {
+            authenticationManager.authenticate(
+                UsernamePasswordAuthenticationToken(request.email, request.password)
+            )
+        } catch (ex: BadCredentialsException) {
+            println("hieu ne 123")
+            throw ResponseStatusException(HttpStatus.UNAUTHORIZED, "Sai email hoặc mật khẩu")
+        } catch (ex: Exception) {
+            throw ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Lỗi xác thực: ${ex.message}")
+        }
         println(authenticationManager::class.qualifiedName)
         var user = studentRepository.findByEmail(request.email)
             .orElseThrow { throw StudentNotFoundException("${request.email} not found!") }
@@ -64,6 +80,7 @@ class AuthenticationService(
         var jwtToken = jwtService.generateToken(user)
         return AuthenticationResponse(
             token = jwtToken,
+            roles = user.role?.name
         )
     }
 }

@@ -1,4 +1,4 @@
-package com.auth
+package com.auth.payload
 
 import lombok.AllArgsConstructor
 import lombok.Builder
@@ -10,5 +10,6 @@ import lombok.NoArgsConstructor
 @AllArgsConstructor
 @NoArgsConstructor
 data class AuthenticationResponse(
-    var token: String? = null
+    var token: String? = null,
+    var roles: String? = null
 )

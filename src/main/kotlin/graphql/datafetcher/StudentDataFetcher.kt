@@ -27,12 +27,11 @@ class StudentDataFetcher(
         return studentService.findById(id)
     }
 
-//    @DgsData(parentType = "Student", field = "courses")
-//    fun courses(dfe: DgsDataFetchingEnvironment): CompletableFuture<List<Course>> {
-//        val loader: DataLoader<Int, List<Course>> =
-//            dfe.getDataLoader(StudentDataLoader.CourseDataLoader::class.java)
-//        val student = dfe.getSource<Student>()
-//        return loader.load(student.id)
-//    }
-
+    @DgsData(parentType = "Student", field = "courses")
+    fun courses(dfe: DgsDataFetchingEnvironment): CompletableFuture<List<Course>> {
+        val loader: DataLoader<Int, List<Course>> =
+            dfe.getDataLoader(StudentDataLoader.CourseDataLoader::class.java)
+        val student = dfe.getSource<Student>()
+        return loader.load(student.id)
+    }
 }

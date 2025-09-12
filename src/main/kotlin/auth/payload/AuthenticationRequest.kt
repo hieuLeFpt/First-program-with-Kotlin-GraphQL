@@ -1,4 +1,4 @@
-package com.auth
+package com.auth.payload
 
 class AuthenticationRequest {
 

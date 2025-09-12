@@ -10,6 +10,7 @@ import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 import java.time.LocalDate
+import com.fasterxml.jackson.annotation.JsonIgnore
 
 @Entity
 @Table(name = "student")
@@ -25,8 +26,9 @@ data class Student(
     var enrollmentDate: LocalDate? = null,
     var passwordUser: String? = null,
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "role_id")
+    @JsonIgnore
     var role: Role? = null,
 
 //    @OneToMany(mappedBy = "student", cascade = [CascadeType.ALL], fetch = FetchType.LAZY)

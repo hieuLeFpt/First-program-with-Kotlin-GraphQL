@@ -17,6 +17,7 @@ class GlobalExceptionHandler : DataFetcherExceptionHandler {
             is StudentNotFoundException -> (ex.message ?: "Student not found") to "STUDENT_NOT_FOUND"
             is StudentDuplicateEmailException -> (ex.message ?: "Duplicate email") to "DUPLICATE_EMAIL"
             is StudentNameException -> (ex.message ?: "Invalid name") to "INVALID_STUDENT_NAME"
+            is StudentWrongEmailAndPass -> (ex.message ?: "Wrong email or password") to "WRONG EMAIL OR PASSWORD"
             else -> (ex?.message ?: "Unexpected error") to "INTERNAL_ERROR"
         }
 

@@ -1,4 +1,4 @@
-package com.auth
+package com.auth.controller
 
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController
 class AuthenticationDemoController {
     @GetMapping
     fun authenticationDemo(): ResponseEntity<String> {
+        println("debug")
         return ResponseEntity("Authentication Demo", HttpStatus.OK)
     }
 }

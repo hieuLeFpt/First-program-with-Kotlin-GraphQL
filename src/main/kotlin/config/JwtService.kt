@@ -67,7 +67,9 @@ class JwtService(
     }
 
     fun getSignInKey(): Key {
+        // lấy chuỗi secretKey trong application để chuyển thành mảng byte
         val keyBytes: ByteArray = Decoders.BASE64.decode(secretKey)
+        // trả về 1 SecretKey mới có thể đưa vào .signWith() để ký token hoặc .setSigningKey() để verify token.
         return Keys.hmacShaKeyFor(keyBytes)
     }
 }

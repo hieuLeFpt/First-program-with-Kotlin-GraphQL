@@ -30,7 +30,7 @@ class StudentMutation(
             major = major,
             enrollmentDate = LocalDate.now()
         )
-        print("craete")
+        print("create")
         if (name.length < 6) throw StudentNameException("Name is at least 6 !")
         if (!studentService.checkDuplicateEmail(email)) {
             studentService.create(newStudent)

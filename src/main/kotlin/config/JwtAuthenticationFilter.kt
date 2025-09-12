@@ -44,11 +44,14 @@ class JwtAuthenticationFilter(
             val userDetail: UserDetails = this.userDetailService.loadUserByUsername(userEmail)
             println(userDetail.toString() + "userDetail")
             if (jwtService.isTokenValid(jwt, userDetail)) {
+                println("valid")
                 val authToken = UsernamePasswordAuthenticationToken(
                     userDetail,
                     null,
                     userDetail.authorities
                 )
+                println(authToken)
+
                 // để lưu lại địa chỉ ip và sessionId của rq
                 authToken.details = WebAuthenticationDetailsSource().buildDetails(request)
                 SecurityContextHolder.getContext().authentication = authToken

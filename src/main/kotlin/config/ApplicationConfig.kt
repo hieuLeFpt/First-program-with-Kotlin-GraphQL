@@ -26,15 +26,6 @@ open class ApplicationConfig(
         }
     }
 
-    // dùng ở security config
-    @Bean
-    open fun authenticationProvider(): AuthenticationProvider {
-        val authProvider = DaoAuthenticationProvider()
-        authProvider.setUserDetailsService(userDetailsService())
-        authProvider.setPasswordEncoder(passwordEncoder())
-        return authProvider
-    }
-
     //ProviderManager
     @Bean
     open fun authenticationManager(config: AuthenticationConfiguration): AuthenticationManager {

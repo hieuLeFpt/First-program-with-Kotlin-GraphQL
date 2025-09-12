@@ -1,6 +1,9 @@
-package com.auth
+package com.auth.controller
 
-import com.auth.AuthenticationService
+import com.auth.payload.AuthenticationRequest
+import com.auth.payload.AuthenticationResponse
+import com.auth.service.AuthenticationService
+import com.auth.payload.RegisterRequest
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -28,4 +31,3 @@ class AuthenticationController(
         return ResponseEntity.ok(authenticationService.authenticate(request))
     }
 }
-
