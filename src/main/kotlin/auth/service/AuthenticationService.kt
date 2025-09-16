@@ -6,7 +6,7 @@ import com.auth.payload.RegisterRequest
 import com.config.JwtService
 import com.entity.Student
 import com.exception.StudentDuplicateEmailException
-import com.exception.StudentNameException
+import jakarta.validation.Valid
 import com.exception.StudentNotFoundException
 import com.repository.RoleRepository
 import com.repository.StudentRepository
@@ -17,12 +17,13 @@ import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
+import org.springframework.validation.annotation.Validated
 import org.springframework.web.server.ResponseStatusException
 import java.time.LocalDate
 
 @Service
 @RequiredArgsConstructor
-class AuthenticationService(
+ class AuthenticationService(
     private val studentRepository: StudentRepository,
     private val passwordEncoder: PasswordEncoder,
     private val roleRepository: RoleRepository,
@@ -51,12 +52,6 @@ class AuthenticationService(
     }
 
     fun authenticate(request: AuthenticationRequest): AuthenticationResponse {
-        request.password?.length?.let {
-            if (it < 6) {
-                throw ResponseStatusException(HttpStatus.BAD_REQUEST,"Mật khẩu phải có ít nhất 6 ký tự"
-                )
-            }
-        }
         // thực chất là ProviderManager .authenticate vì implements AuthenticationManager(interface)
         // mà trong ProviderManager có dùng method .authenticate, AuthenticationProvider(interface) được impl bởi
         // AbstractUserDetailsAuthenticationProvider class đã ghi đè authenticate ở AuthenticationProvider(interface)
@@ -82,5 +77,9 @@ class AuthenticationService(
             token = jwtToken,
             roles = user.role?.name
         )
+    }
+
+    fun logOut(){
+
     }
 }

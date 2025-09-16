@@ -1,6 +1,6 @@
 package com.controller
 
-import com.dto.StudentDTO
+import com.dto.StudentCreateDTO
 import com.entity.Student
 import com.service.StudentService
 import jakarta.validation.*
@@ -21,13 +21,13 @@ class HomeController(private val service: StudentService) {
     @GetMapping("/")
     fun home(model: Model): String {
         model.addAttribute("students", service.getAll())
-        model.addAttribute("studentDTO", StudentDTO())
+        model.addAttribute("studentDTO", StudentCreateDTO())
         return "home" // file templates/home.html
     }
 
     @PostMapping("/student/create")
     fun create(
-        @Valid @ModelAttribute studentDTO: StudentDTO,
+        @Valid @ModelAttribute studentCreateDTO: StudentCreateDTO,
         bindingResult: BindingResult,
         model: Model
     ): String {
@@ -39,39 +39,39 @@ class HomeController(private val service: StudentService) {
         }
 
         val student = Student(
-            id = studentDTO.id,
-            name = studentDTO.name,
-            age = studentDTO.age,
-            email = studentDTO.email,
-            major = studentDTO.major,
+            id = studentCreateDTO.id,
+            name = studentCreateDTO.name,
+            age = studentCreateDTO.age,
+            email = studentCreateDTO.email,
+            major = studentCreateDTO.major,
             enrollmentDate = LocalDate.now()
         )
-        if (!service.checkDuplicateEmail(studentDTO.email)) {
+        if (!service.checkDuplicateEmail(studentCreateDTO.email)) {
             service.create(student)
             model.addAttribute("students", service.getAll())
-            model.addAttribute("studentDTO", StudentDTO())
+            model.addAttribute("studentDTO", StudentCreateDTO())
             model.addAttribute("createSuccess", "Create success!")
             return "home"
         } else {
             model.addAttribute("students", service.getAll())
-            model.addAttribute("studentDTO", StudentDTO())
+            model.addAttribute("studentDTO", StudentCreateDTO())
             model.addAttribute("duplicateEmail", "Duplicate email!")
             model.addAttribute("showCreateModal", true)
         }
         model.addAttribute("students", service.getAll())
-        model.addAttribute("studentDTO", StudentDTO())
+        model.addAttribute("studentDTO", StudentCreateDTO())
         return "home"
     }
 
     @GetMapping("/student/search")
     fun search(@RequestParam("keyword") keyword: String, model: Model): String {
         model.addAttribute("students", service.findByName(keyword))
-        model.addAttribute("studentDTO", StudentDTO())
+        model.addAttribute("studentDTO", StudentCreateDTO())
         return "home";
     }
 
     @DeleteMapping("/student/update")
-    fun update(@Valid @ModelAttribute studentDTO: StudentDTO,
+    fun update(@Valid @ModelAttribute studentCreateDTO: StudentCreateDTO,
                bindingResult: BindingResult,
                model: Model): String {
         if (bindingResult.hasErrors()) {
@@ -81,27 +81,27 @@ class HomeController(private val service: StudentService) {
             return "home" // quay lại form nhập nếu có lỗi validation
         }
         val student = Student(
-            id = studentDTO.id,
-            name = studentDTO.name,
-            age = studentDTO.age,
-            email = studentDTO.email,
-            major = studentDTO.major,
+            id = studentCreateDTO.id,
+            name = studentCreateDTO.name,
+            age = studentCreateDTO.age,
+            email = studentCreateDTO.email,
+            major = studentCreateDTO.major,
             enrollmentDate = LocalDate.now()
         )
-        if (!service.checkDuplicateEmail(studentDTO.email)) {
-            service.update(studentDTO.id, student)
+        if (!service.checkDuplicateEmail(studentCreateDTO.email)) {
+            service.update(studentCreateDTO.id, student)
             model.addAttribute("students", service.getAll())
-            model.addAttribute("studentDTO", StudentDTO())
+            model.addAttribute("studentDTO", StudentCreateDTO())
             model.addAttribute("updateSuccess", "Update success!")
             return "home"
         } else {
             model.addAttribute("students", service.getAll())
-            model.addAttribute("studentDTO", StudentDTO())
+            model.addAttribute("studentDTO", StudentCreateDTO())
             model.addAttribute("duplicateEmail", "Duplicate email!")
             model.addAttribute("showCreateModal", true)
         }
         model.addAttribute("students", service.getAll())
-        model.addAttribute("studentDTO", StudentDTO())
+        model.addAttribute("studentDTO", StudentCreateDTO())
         return "home"
     }
 
@@ -111,7 +111,7 @@ class HomeController(private val service: StudentService) {
         service.delete(id)
         model.addAttribute("deleteSuccess", "Delete success!")
         model.addAttribute("students", service.getAll())
-        model.addAttribute("studentDTO", StudentDTO())
+        model.addAttribute("studentDTO", StudentCreateDTO())
         return "home"
     }
 

@@ -29,4 +29,7 @@ interface StudentRepository : JpaRepository<Student, Int> {
         @Param("email") email: String?,
         @Param("id") id: Int?
     ): Boolean
+
+    @Query("SELECT s FROM Student s WHERE s.name = :name")
+    fun findByUsername(@Param ("name")name: String?): Student
 }

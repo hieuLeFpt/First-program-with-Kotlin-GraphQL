@@ -15,7 +15,10 @@ open class StudentService(
     fun getAll(): List<Student> {
         return repo.findAll()
     }
-    open fun create(student: Student): Student = repo.save(student)
+
+    open fun create(student: Student): Student {
+        return repo.save(student)
+    }
 
     open fun delete(id: Int?): Boolean {
         return if (repo.existsById(id)) {
@@ -55,5 +58,13 @@ open class StudentService(
 
     fun findCoursesByStudentIds(ids: Collection<Int>): List<Course> {
         return courseRepo.findByStudentIdIn(ids)
+    }
+
+    fun findByUserName(name: String?): Student {
+        return repo.findByUsername(name)
+    }
+
+    fun findByEmail(email: String?): Student {
+        return repo.findByEmail(email).get()
     }
 }

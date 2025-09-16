@@ -4,6 +4,7 @@ type Student{
     age: Int!
     email: String!
     major: String!
+    passwordUser: String
     courses: [Course!]
     role: Role
 }
@@ -21,11 +22,15 @@ input StudentCreate {
     age: Int!
     email: String!
     major: String!
+    passwordUser: String!
 }
 
 type Query {
     getAll: [Student!]!
-    getById(id: ID!): Student
+    getAllCourse: [Course!]
+    getStudentById(id: ID!): Student
+    getStudentByUserName(name: String!): Student
+    getStudentByEmail(email: String!): Student
 }
 
 type Mutation {

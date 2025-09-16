@@ -1,6 +1,6 @@
 package com.controller
 
-import com.dto.StudentDTO
+import com.dto.StudentCreateDTO
 import com.entity.Student
 import com.service.StudentService
 import jakarta.validation.Valid
@@ -27,7 +27,7 @@ class StudentControllerRestfulAPI(private val studentService: StudentService) {
 
     @PostMapping("/create")
     fun create(
-        @Valid @RequestBody student: StudentDTO,
+        @Valid @RequestBody student: StudentCreateDTO,
         bindingResult: BindingResult
     ): ResponseEntity<Any> {
         if (bindingResult.hasErrors()) {
@@ -61,7 +61,7 @@ class StudentControllerRestfulAPI(private val studentService: StudentService) {
 
     @PutMapping("/update")
     fun update(
-        @Valid @RequestBody studentDTO: StudentDTO,
+        @Valid @RequestBody studentCreateDTO: StudentCreateDTO,
         bindingResult: BindingResult
     ): ResponseEntity<Any> {
         if (bindingResult.hasErrors()) {
@@ -70,15 +70,15 @@ class StudentControllerRestfulAPI(private val studentService: StudentService) {
                 .body(mapOf("errors" to bindingResult.allErrors))
         }
         val studentCreate = Student(
-            id = studentDTO.id,
-            name = studentDTO.name,
-            age = studentDTO.age,
-            email = studentDTO.email,
-            major = studentDTO.major,
+            id = studentCreateDTO.id,
+            name = studentCreateDTO.name,
+            age = studentCreateDTO.age,
+            email = studentCreateDTO.email,
+            major = studentCreateDTO.major,
             enrollmentDate = LocalDate.now()
         )
-        if (!studentService.checkDuplicateEmail(studentDTO.email)) {
-            studentService.update(studentDTO.id, studentCreate)
+        if (!studentService.checkDuplicateEmail(studentCreateDTO.email)) {
+            studentService.update(studentCreateDTO.id, studentCreate)
             return ResponseEntity.ok(mapOf("success" to true))
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)

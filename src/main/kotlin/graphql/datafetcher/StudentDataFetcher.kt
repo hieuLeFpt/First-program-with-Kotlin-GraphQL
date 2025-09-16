@@ -23,8 +23,18 @@ class StudentDataFetcher(
     }
 
     @DgsQuery
-    fun getById(@InputArgument id: Int?): Student {
+    fun getStudentById(@InputArgument id: Int?): Student {
         return studentService.findById(id)
+    }
+
+    @DgsQuery
+    fun getStudentByUserName(@InputArgument name: String?): Student {
+        return studentService.findByUserName(name)
+    }
+
+    @DgsQuery
+    fun getStudentByEmail(@InputArgument email: String?): Student {
+        return studentService.findByEmail(email)
     }
 
     @DgsData(parentType = "Student", field = "courses")

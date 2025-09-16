@@ -1,57 +1,42 @@
 package com.graphql.mutation
 
-import com.dto.StudentDTO
+import com.dto.StudentCreateDTO
 import com.entity.Student
 import com.exception.StudentDuplicateEmailException
-import com.exception.StudentNameException
 import com.exception.StudentNotFoundException
 import com.netflix.graphql.dgs.DgsComponent
 import com.netflix.graphql.dgs.DgsMutation
 import com.netflix.graphql.dgs.InputArgument
+import com.repository.RoleRepository
 import com.service.StudentService
 import jakarta.validation.Valid
+import org.springframework.security.crypto.password.PasswordEncoder
 import java.time.LocalDate
-
+import org.springframework.validation.annotation.Validated
+import org.springframework.security.access.prepost.PreAuthorize
 @DgsComponent
-class StudentMutation(
-    private val studentService: StudentService
+@Validated
+open class StudentMutation(
+    private val studentService: StudentService,
+    private val passwordEncoder: PasswordEncoder,
+    private val roleRepository: RoleRepository
 ) {
-    @DgsMutation
-    fun create(
-        @InputArgument name: String,
-        @InputArgument age: Int,
-        @InputArgument email: String,
-        @InputArgument major: String
-    ): Boolean {
-        val newStudent = Student(
-            name = name,
-            age = age,
-            email = email,
-            major = major,
-            enrollmentDate = LocalDate.now()
-        )
-        print("create")
-        if (name.length < 6) throw StudentNameException("Name is at least 6 !")
-        if (!studentService.checkDuplicateEmail(email)) {
-            studentService.create(newStudent)
-            return true
-        } else {
-            println("update by filed duplicate")
-            throw StudentDuplicateEmailException("${newStudent.email} is exists!")
-        }
-    }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DgsMutation
-    fun createStudent(@Valid @InputArgument student: StudentDTO): Student? {
+    open fun createStudent(@Valid @InputArgument student: StudentCreateDTO): Student? {
+        println(student.passwordUser + "pass được tạo")
         val newStudent = Student(
             name = student.name,
             age = student.age,
             email = student.email,
             major = student.major,
+            passwordUser = passwordEncoder.encode(student.passwordUser),
+            role = roleRepository.findByName("STUDENT")
+                .orElseThrow { IllegalStateException("Role not found in DB") },
             enrollmentDate = LocalDate.now()
         )
         println("create by object")
-        student.name?.length?.let { if (it < 6) throw StudentNameException("Name is at least 6 !") }
         if (!studentService.checkDuplicateEmail(student.email)) {
             return studentService.create(newStudent)
         } else {
@@ -60,8 +45,9 @@ class StudentMutation(
         }
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DgsMutation
-    fun updateStudent(@Valid @InputArgument student: StudentDTO): Student? {
+    fun updateStudent(@Valid @InputArgument student: StudentCreateDTO): Student? {
         val updateStudent = Student(
             id = student.id,
             name = student.name,
@@ -75,6 +61,7 @@ class StudentMutation(
         } else throw StudentDuplicateEmailException("${updateStudent.email} is exists!")
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DgsMutation
     fun update(
         @InputArgument id: Int,
@@ -96,6 +83,7 @@ class StudentMutation(
         } else throw StudentDuplicateEmailException("${updateStudent.email} is exists!")
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DgsMutation
     fun delete(@InputArgument id: Int): Boolean {
         println("delete")

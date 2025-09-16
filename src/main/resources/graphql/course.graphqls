@@ -3,5 +3,5 @@ type Course{
     name: String!
     description: String!
     active: Boolean!
-#    student: Student
+    urlImg: String!
 }

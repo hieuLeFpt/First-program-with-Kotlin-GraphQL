@@ -2,7 +2,7 @@ package com.dto
 
 import jakarta.validation.constraints.*
 
-data class StudentDTO (
+data class StudentCreateDTO (
     val id: Int? = null,
 
     @field:NotBlank(message = "Name is required")
@@ -21,11 +21,7 @@ data class StudentDTO (
     @field:NotBlank(message = "Major is required")
     var major: String? = null,
 
-    @field:NotBlank(message = "User name is required")
-    @field:Size(min = 6, max = 50, message = "Invalid user name!")
-    var userName: String? = null,
-
     @field:NotNull(message = "Password is required")
     @field:Size(min = 6, max = 50, message = "Invalid password!")
-    var password: String? = null,
+    var passwordUser: String? = null,
 )

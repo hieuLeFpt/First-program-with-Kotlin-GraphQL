@@ -16,6 +16,8 @@ class Course {
     var description: String? = null
     var active: Boolean? = null
     var studentId: Int? = null
+    @Column(name = "url_img")
+    var urlImg: String? = null
 //    @ManyToOne(fetch = FetchType.EAGER)
 //    @JoinColumn(name = "student_id")
 //    var student: Student? = null
